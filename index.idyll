@@ -1,0 +1,232 @@
+[meta title:"Skyscrapers in USA" description:"Short description of your project" /]
+
+[Header
+  fullWidth:true
+  title:"Skyscrapers in USA"
+  subtitle:""
+  author:"Shubhda Sharma"
+  authorLink:"https://idyll-lang.org"
+  date:`(new Date()).toDateString()` 
+  /]
+  [img src:"https://cdn.pixabay.com/photo/2016/11/29/11/33/architecture-1869211_960_720.jpg" width:1200 height:500 border:0 fullWidth:true padding-bottom:42 /]
+
+## Overview
+ 
+[p style:`{"text-align":"justify"}`] The dataset published by CORGIS named as [skyscrapers.csv](https://corgis-edu.github.io/corgis/datasets/csv/skyscrapers/skyscrapers.csv) contains collected statistics about the tallest buildings all over the United States, including the materials used to develop them, the purpose of the buildings, and more. 
+[/p]
+
+### Tallest buildings in the United States:
+[p style:`{"text-align":"justify"}`] The world's first skyscraper was built in Chicago in 1885. Since then, the United States has been home to some of the world's tallest skyscrapers. New York City, specifically the borough of Manhattan, notably has the tallest skyline in the country. Nine American buildings have held the title of tallest building in the world.
+The visualization below shows the list of tallest buildings of the USA along with their height in meters.
+[img src:"https://upload.wikimedia.org/wikipedia/commons/d/df/Tallest_buildings_in_the_USA_by_pinnacle_height%2C_2020.jpg" width:800 height:400 border:0 fullWidth:true padding-bottom:42 /]
+[/p]
+
+
+### How long does it take to build a skyscraper now versus fifty years ago?
+[p style:`{"text-align":"justify"}`]It would be quite interesting to observe the trend of how with each passing year the number of skyscrapers being 
+constructed increases or decreases. The dropdown below lists some of the capital states of the US along with those states plotted on the map of US. Upon 
+selection of any state, a line chart gets plotted which depicts the fluctuation in the number of
+skyscrapers being constructed over a period of time. Although we won't be able to get a clear picture of 
+exactly how much time it takes to build a skyscraper but by counting the number of skyscrapers each year 
+we can always get a brief idea about how things have changed or not changed over a period of time.
+
+[/p]
+
+[h2]Height of skyscrapers[/h2]
+[p style:`{"text-align":"justify"}`]Different organizations from the United States and Europe define skyscrapers as buildings at least 
+150 metres in height or taller, with "supertall" skyscrapers for buildings higher than 300 m (984 ft) and "megatall" skyscrapers for those taller than 600 m (1,969 ft).
+Through the barchart below the user can compare the height of each skyscraper in the capital state selected from dropdown.
+[/p]
+
+[data name:"sky" source:"skyscrapers1.csv" /]
+
+### Select capital state from the dropdown below:
+[var name:"selectstate" value:"Atlanta" /]
+
+
+[Select value:selectstate options:`["Sacramento","Boise","Salt Lake City","Phoenix","Honolulu",
+,"Denver","Bismarck","Oklahoma City","Austin","Des Moines","Baton Rouge",
+"Indianapolis","Lansing","Nashville","Atlanta","Tallahassee","Columbus","Charleston","Raleigh","Richmond","Harrisburg",
+"Hartford","Albany","Providence","Boston"]`  /]
+
+
+[div style:`{"float":"left","width":"50%"}` fullWidth:true]
+[IdyllVegaLite  spec:`{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "width": 550,
+  "height": 550,  
+  "projection": {
+    "type": "albersUsa"
+  },
+  "title":"U.S. State Capitals Overlayed on a Map of U.S",
+  "layer": [
+    {
+      "data": {
+        "url": "https://raw.githubusercontent.com/vega/vega/master/docs/data/us-10m.json",
+        "format": {
+          "type": "topojson",
+          "feature": "states"
+        }
+      },
+      "mark": {
+        "type": "geoshape",
+        "fill": "lightgray",
+        "stroke": "white"
+      }
+    },
+    {
+      "data": {
+        "url": "https://raw.githubusercontent.com/vega/vega/master/docs/data/us-state-capitals.json"
+      },
+      "encoding": {
+        "longitude": {
+          "field": "lon",
+          "type": "quantitative"
+        },
+        "latitude": {
+          "field": "lat",
+          "type": "quantitative"
+        }
+      },
+      "layer": [{
+        "mark": {
+          "type": "circle",
+          "color": "orange"
+        }
+      }, {
+        "mark": {
+          "type": "text",
+          "dy": -10
+        },
+        "encoding": {
+          "text": {"field": "city", "type": "nominal"}
+        }
+      }]
+    }
+  ]
+}
+
+`/]
+
+[/div]
+
+[div style:`{"float":"right","width":"50%"}`]
+
+[IdyllVegaLite data:sky  spec:`{
+  mark: "line",
+  height: 400,
+  width:500,
+  "title":"Number of skyscrapers constructed over a period of time in the state selected",
+  transform:[{filter:{"field":"city", "equal": selectstate}}],
+  encoding: {
+    x: {
+      field: "completedyear",
+      type: "nominal",
+      "axis":{title: "Completion Year"}     
+    },
+    y: {
+      field: "completedyear",
+      aggregate: "count",
+      type:"quantitative",
+      axis: {title: "Count of Skyscrapers"}     
+     
+    }, 
+   
+  }
+  
+}` 
+/]
+
+
+[/div]
+
+
+
+
+
+[div fullWidth:true style:`{"margin-left":142}`]
+
+
+
+[IdyllVegaLite data:sky  spec:`{
+  mark: "bar",
+  height: 500,
+  width:900,
+  transform:[{filter:{"field":"city", "equal": selectstate}}],
+  encoding: {
+    x: {
+      field: "name",
+      type: "nominal",
+      "axis":{title: "Skyscraper","ticks":false, "values":[]}     
+    },
+    y: {
+      field: "height",
+      type:"quantitative",
+      axis: {title: "Height of the Skyscraper (in meters)"}     
+     
+    }, 
+    color:{"field":"name","type":"nominal"}
+  }
+  
+}` 
+/]
+[/div]
+
+
+
+ 
+[h2]Material used for the construction of skyscrapers[/h2]
+[p style:`{"text-align":"justify"}`] Modern skyscrapers are built with steel or reinforced concrete frameworks and curtain walls of glass or polished stone. 
+They use mechanical equipment such as water pumps and elevators.
+If you select a material through the dropdown given below, a bar chart is plotted which will give the count of the 
+ number of skyscrapers in each city made from the material selected.
+ [/p]
+
+### Select construction material used from the dropdown below
+[var name:"selectVal" value:"composite" /]
+[Select value:selectVal options:`["composite","concrete/steel" ,"concrete","masonry","precast","steel","steel/concrete"]`  /]
+
+// [Table data:`skyscrapers.slice(0,10)`/]
+[div fullWidth:true style:`{"margin-left":142}`]
+[IdyllVegaLite data:sky  spec:`{
+  mark: "bar",
+  title:"Number of skyscrapers in each city constructed with the material selected",
+  height: 500,
+  width:900,
+  transform:[{filter:{"field":"material", "equal": selectVal}}],
+  encoding: {
+    x: {
+      field: "city",
+      type: "nominal",
+      axis: {title: "City Name"}
+    },
+    y: {
+      field: "city",
+      aggregate: "count",
+      axis: {title: "Count of Skyscrapers"}     
+     
+    }, 
+    color:{"field":"city","type":"nominal"}
+  }
+  
+}` 
+/]
+[/div]
+
+### References
+
+### Datasets:
+
+##### The dataset for skyscrapers: [skyscrapers.csv](https://corgis-edu.github.io/corgis/datasets/csv/skyscrapers/skyscrapers.csv)
+##### The geojson for the capital states of the US: [US capital states geojson](https://raw.githubusercontent.com/vega/vega/master/docs/data/us-state-capitals.json)
+##### The geojson for the map of US: [US map geojson](https://raw.githubusercontent.com/vega/vega/master/docs/data/us-10m.json)
+
+### Other links:
+##### https://vega.github.io/vega-lite/examples/geo_text.html
+##### https://en.wikipedia.org/wiki/List_of_tallest_buildings_in_the_United_States
+
+
+
+
+
+
